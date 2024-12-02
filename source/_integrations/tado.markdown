@@ -177,3 +177,46 @@ automation:
           reading: "{{ states('sensor.gas_consumption')|int }}"
 ```
 {% endraw %}
+
+### Action `tado.set_zone_heating_circuit`
+
+You can use the `tado.set_zone_heating_circuit` action to set your heating circuit for specific zone/s.
+
+| Data attribute | Optional | Description                                                            |
+| ---------------------- | -------- | ---------------------------------------------------------------------- |
+| `target`               | no       | String, Target zone/s for heating circuit.                             |
+| `heater`               | yes      | String, Heater currently only ON/OFF.                                  |
+
+Examples:
+
+{% raw %}
+```yaml
+# Example automation to assign to specific zones water heater with just press of one button on remote.
+automation:
+  # Trigger by press of button
+  triggers:
+    - device_id: a10ed9450d4a5f1b30c06348c0c76417
+      domain: zwave_js
+      type: event.value_notification.central_scene
+      property: scene
+      property_key: "002"
+      endpoint: 0
+      command_class: 91
+      subtype: Endpoint 0 Scene 002
+      trigger: device
+      value: 0
+
+  #
+  actions:
+    - action: tado.set_zone_heating_circuit
+      data:
+        heater: water_heater.horuca_voda
+      target:
+        entity_id:
+          - climate.peter_detska
+          - climate.obyvacka
+          - climate.spalna
+          - climate.mimka_detska_izba
+
+```
+{% endraw %}
